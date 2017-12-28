@@ -1,0 +1,700 @@
+压缩tensorflow权重文件
+cp demo.py test.py
+
+
+运行demo.py的时候注意：python ./src/demo.py
+要从根目录下执行
+
+
+
+for l in model.model_params:
+  if 'kernel' in l.name:
+    w = sess.run(l)
+    w = prune_edges_with_small_weight(w, 30)
+    
+    op = tf.assign(l,w, validate_shape=False)
+    sess.run(op)
+    print (l.name)
+
+
+
+evaluation:
+python ./src/eval.py --data_path=./data/KITTI --image_set='val' --eval_dir=./result --checkpoint_path=./data/model_checkpoints/squeezeDet 
+
+
+使用方法：
+
+vim ./src/test.py
+
+244: path = compress(30,64)  # 这个是压缩，前面是percent，后面是cluster
+     decode(path)  #这个是解压
+
+python ./src/test.py
+会生成.ckpt文件和.npy文件  在运行的根目录下
+
+再将.ckpt文件拷贝到 ./data/model_checkpoints/squeezeDet下
+mv model_decode_0_64.ckpt.* data/model_checkpoints/squeezeDet/
+修改checkpoint文件， 将里面的值修改乘新压缩的文件
+vim data/model_checkpoints/squeezeDet/checkpoint
+
+
+运行下面的命令： 注意是在根目录下运行
+python ./src/eval.py --data_path=./data/KITTI --image_set='val' --eval_dir=./result --checkpoint_path=./data/model_checkpoints/squeezeDet
+
+如果值压缩权重的话，就用eval_1.py
+
+
+读取权重各层名称
+('tensor_name: ', 'fire4/expand1x1/biases')
+('tensor_name: ', 'fire9/expand1x1/kernels/Momentum')
+('tensor_name: ', 'fire6/expand1x1/biases')
+('tensor_name: ', 'fire4/expand3x3/kernels')
+('tensor_name: ', 'fire11/expand3x3/kernels/Momentum')
+('tensor_name: ', 'fire6/expand3x3/biases/Momentum')
+('tensor_name: ', 'fire2/squeeze1x1/biases')
+('tensor_name: ', 'fire2/squeeze1x1/kernels')
+('tensor_name: ', 'fire11/expand3x3/kernels')
+('tensor_name: ', 'fire5/expand1x1/kernels/Momentum')
+('tensor_name: ', 'fire10/expand3x3/biases')
+('tensor_name: ', 'fire7/squeeze1x1/kernels/Momentum')
+('tensor_name: ', 'fire4/squeeze1x1/biases')
+('tensor_name: ', 'fire2/expand1x1/kernels/Momentum')
+('tensor_name: ', 'fire8/squeeze1x1/biases')
+('tensor_name: ', 'fire6/expand1x1/kernels')
+('tensor_name: ', 'fire4/expand1x1/kernels')
+('tensor_name: ', 'fire11/expand3x3/biases/Momentum')
+('tensor_name: ', 'fire10/expand1x1/kernels')
+('tensor_name: ', 'fire4/squeeze1x1/kernels')
+('tensor_name: ', 'fire4/expand3x3/kernels/Momentum')
+('tensor_name: ', 'fire4/squeeze1x1/biases/Momentum')
+('tensor_name: ', 'fire11/expand1x1/kernels')
+('tensor_name: ', 'fire6/expand3x3/kernels/Momentum')
+('tensor_name: ', 'fire7/expand1x1/kernels/Momentum')
+('tensor_name: ', 'fire10/expand1x1/kernels/Momentum')
+('tensor_name: ', 'fire2/squeeze1x1/biases/Momentum')
+('tensor_name: ', 'fire2/expand1x1/biases/Momentum')
+('tensor_name: ', 'fire2/expand3x3/kernels')
+('tensor_name: ', 'fire2/expand3x3/biases/Momentum')
+('tensor_name: ', 'fire4/squeeze1x1/kernels/Momentum')
+('tensor_name: ', 'fire8/squeeze1x1/kernels/Momentum')
+('tensor_name: ', 'fire8/expand3x3/kernels')
+('tensor_name: ', 'fire3/expand1x1/kernels/Momentum')
+('tensor_name: ', 'fire2/expand1x1/biases')
+('tensor_name: ', 'fire5/squeeze1x1/kernels/Momentum')
+('tensor_name: ', 'fire3/squeeze1x1/kernels/Momentum')
+('tensor_name: ', 'fire10/expand1x1/biases/Momentum')
+('tensor_name: ', 'fire8/squeeze1x1/kernels')
+('tensor_name: ', 'fire11/squeeze1x1/kernels/Momentum')
+('tensor_name: ', 'fire8/expand3x3/biases/Momentum')
+('tensor_name: ', 'fire9/expand1x1/kernels')
+('tensor_name: ', 'fire3/expand3x3/kernels')
+('tensor_name: ', 'conv12/kernels')
+('tensor_name: ', 'fire8/expand1x1/biases/Momentum')
+('tensor_name: ', 'fire9/expand1x1/biases')
+('tensor_name: ', 'fire7/squeeze1x1/kernels')
+('tensor_name: ', 'fire11/squeeze1x1/biases')
+('tensor_name: ', 'fire11/expand3x3/biases')
+('tensor_name: ', 'fire3/expand3x3/biases')
+('tensor_name: ', 'fire7/expand3x3/kernels')
+('tensor_name: ', 'fire6/expand1x1/biases/Momentum')
+('tensor_name: ', 'fire7/expand1x1/biases')
+('tensor_name: ', 'fire6/expand3x3/kernels')
+('tensor_name: ', 'fire2/expand3x3/biases')
+('tensor_name: ', 'fire11/expand1x1/biases/Momentum')
+('tensor_name: ', 'fire10/expand3x3/kernels/Momentum')
+('tensor_name: ', 'fire6/squeeze1x1/biases/Momentum')
+('tensor_name: ', 'fire2/squeeze1x1/kernels/Momentum')
+(1, 1, 64, 16)
+('tensor_name: ', 'fire5/squeeze1x1/biases')
+('tensor_name: ', 'fire5/expand1x1/biases')
+('tensor_name: ', 'fire8/expand1x1/kernels/Momentum')
+('tensor_name: ', 'fire7/expand1x1/kernels')
+('tensor_name: ', 'conv12/biases')
+('tensor_name: ', 'fire3/squeeze1x1/kernels')
+('tensor_name: ', 'fire5/expand3x3/biases')
+('tensor_name: ', 'fire10/squeeze1x1/kernels')
+('tensor_name: ', 'fire4/expand3x3/biases/Momentum')
+('tensor_name: ', 'fire8/expand1x1/biases')
+('tensor_name: ', 'fire8/expand3x3/kernels/Momentum')
+('tensor_name: ', 'fire10/expand1x1/biases')
+('tensor_name: ', 'fire9/expand3x3/kernels')
+('tensor_name: ', 'fire7/expand1x1/biases/Momentum')
+('tensor_name: ', 'fire8/expand3x3/biases')
+('tensor_name: ', 'fire3/expand1x1/kernels')
+('tensor_name: ', 'fire4/expand1x1/biases/Momentum')
+('tensor_name: ', 'fire10/squeeze1x1/biases')
+('tensor_name: ', 'fire6/expand3x3/biases')
+('tensor_name: ', 'fire5/expand3x3/biases/Momentum')
+('tensor_name: ', 'fire9/squeeze1x1/kernels')
+('tensor_name: ', 'fire7/expand3x3/biases/Momentum')
+('tensor_name: ', 'fire7/squeeze1x1/biases')
+('tensor_name: ', 'fire3/expand3x3/kernels/Momentum')
+('tensor_name: ', 'fire4/expand3x3/biases')
+('tensor_name: ', 'fire8/expand1x1/kernels')
+('tensor_name: ', 'fire9/squeeze1x1/kernels/Momentum')
+('tensor_name: ', 'fire9/expand3x3/biases/Momentum')
+('tensor_name: ', 'fire10/expand3x3/biases/Momentum')
+('tensor_name: ', 'conv1/biases')
+('tensor_name: ', 'conv12/biases/Momentum')
+('tensor_name: ', 'fire5/expand3x3/kernels')
+('tensor_name: ', 'fire2/expand3x3/kernels/Momentum')
+('tensor_name: ', 'fire7/squeeze1x1/biases/Momentum')
+('tensor_name: ', 'conv1/kernels')
+('tensor_name: ', 'fire9/expand1x1/biases/Momentum')
+('tensor_name: ', 'fire2/expand1x1/kernels')
+('tensor_name: ', 'fire3/expand1x1/biases/Momentum')
+('tensor_name: ', 'fire9/expand3x3/kernels/Momentum')
+('tensor_name: ', 'global_step')
+('tensor_name: ', 'fire10/expand3x3/kernels')
+('tensor_name: ', 'fire3/squeeze1x1/biases')
+('tensor_name: ', 'fire6/squeeze1x1/kernels/Momentum')
+('tensor_name: ', 'fire11/expand1x1/kernels/Momentum')
+('tensor_name: ', 'fire8/squeeze1x1/biases/Momentum')
+('tensor_name: ', 'fire5/squeeze1x1/kernels')
+('tensor_name: ', 'fire3/expand3x3/biases/Momentum')
+('tensor_name: ', 'fire6/expand1x1/kernels/Momentum')
+('tensor_name: ', 'fire4/expand1x1/kernels/Momentum')
+('tensor_name: ', 'fire5/expand3x3/kernels/Momentum')
+('tensor_name: ', 'fire7/expand3x3/biases')
+('tensor_name: ', 'iou')
+('tensor_name: ', 'fire7/expand3x3/kernels/Momentum')
+('tensor_name: ', 'fire6/squeeze1x1/biases')
+('tensor_name: ', 'fire3/expand1x1/biases')
+('tensor_name: ', 'fire5/squeeze1x1/biases/Momentum')
+('tensor_name: ', 'conv12/kernels/Momentum')
+('tensor_name: ', 'fire9/squeeze1x1/biases')
+('tensor_name: ', 'fire6/squeeze1x1/kernels')
+('tensor_name: ', 'fire10/squeeze1x1/biases/Momentum')
+('tensor_name: ', 'fire5/expand1x1/kernels')
+('tensor_name: ', 'fire9/squeeze1x1/biases/Momentum')
+('tensor_name: ', 'fire11/squeeze1x1/biases/Momentum')
+('tensor_name: ', 'fire9/expand3x3/biases')
+('tensor_name: ', 'fire3/squeeze1x1/biases/Momentum')
+('tensor_name: ', 'fire11/expand1x1/biases')
+('tensor_name: ', 'fire11/squeeze1x1/kernels')
+('tensor_name: ', 'fire10/squeeze1x1/kernels/Momentum')
+('tensor_name: ', 'fire5/expand1x1/biases/Momentum')
+
+
+conv1/kernels:0
+conv1/biases:0
+fire2/squeeze1x1/kernels:0
+fire2/squeeze1x1/biases:0
+fire2/expand1x1/kernels:0
+fire2/expand1x1/biases:0
+fire2/expand3x3/kernels:0
+fire2/expand3x3/biases:0
+fire3/squeeze1x1/kernels:0
+fire3/squeeze1x1/biases:0
+fire3/expand1x1/kernels:0
+fire3/expand1x1/biases:0
+fire3/expand3x3/kernels:0
+fire3/expand3x3/biases:0
+fire4/squeeze1x1/kernels:0
+fire4/squeeze1x1/biases:0
+fire4/expand1x1/kernels:0
+fire4/expand1x1/biases:0
+fire4/expand3x3/kernels:0
+fire4/expand3x3/biases:0
+fire5/squeeze1x1/kernels:0
+fire5/squeeze1x1/biases:0
+fire5/expand1x1/kernels:0
+fire5/expand1x1/biases:0
+fire5/expand3x3/kernels:0
+fire5/expand3x3/biases:0
+fire6/squeeze1x1/kernels:0
+fire6/squeeze1x1/biases:0
+fire6/expand1x1/kernels:0
+fire6/expand1x1/biases:0
+fire6/expand3x3/kernels:0
+fire6/expand3x3/biases:0
+fire7/squeeze1x1/kernels:0
+fire7/squeeze1x1/biases:0
+fire7/expand1x1/kernels:0
+fire7/expand1x1/biases:0
+fire7/expand3x3/kernels:0
+fire7/expand3x3/biases:0
+fire8/squeeze1x1/kernels:0
+fire8/squeeze1x1/biases:0
+fire8/expand1x1/kernels:0
+fire8/expand1x1/biases:0
+fire8/expand3x3/kernels:0
+fire8/expand3x3/biases:0
+fire9/squeeze1x1/kernels:0
+fire9/squeeze1x1/biases:0
+fire9/expand1x1/kernels:0
+fire9/expand1x1/biases:0
+fire9/expand3x3/kernels:0
+fire9/expand3x3/biases:0
+fire10/squeeze1x1/kernels:0
+fire10/squeeze1x1/biases:0
+fire10/expand1x1/kernels:0
+fire10/expand1x1/biases:0
+fire10/expand3x3/kernels:0
+fire10/expand3x3/biases:0
+fire11/squeeze1x1/kernels:0
+fire11/squeeze1x1/biases:0
+fire11/expand1x1/kernels:0
+fire11/expand1x1/biases:0
+fire11/expand3x3/kernels:0
+fire11/expand3x3/biases:0
+conv12/kernels:0
+conv12/biases:0
+
+
+
+未压缩：
+
+Evaluation summary:
+  Average number of detections per image: 10.5057471264:
+  Timing:
+    im_read: 0.018s detect: 0.025s misc: 0.007s
+  Average precisions:
+    car_easy: 0.933
+    car_medium: 0.875
+    car_hard: 0.789
+    pedestrian_easy: 0.817
+    pedestrian_medium: 0.754
+    pedestrian_hard: 0.683
+    cyclist_easy: 0.868
+    cyclist_medium: 0.861
+    cyclist_hard: 0.788
+    Mean average precision: 0.819
+Analyzing detections...
+Detection Analysis:
+    Number of detections: 16809.0
+    Number of objects: 17381.0
+    Percentage of correct detections: 0.866678565054
+    Percentage of localization error: 0.0681182699744
+    Percentage of classification error: 0.00416443571896
+    Percentage of background error: 0.0594324469034
+    Percentage of repeated detections: 0.00160628234874
+    Recall: 0.83815660779
+
+
+权重压缩10%：
+Evaluation summary:
+  Average number of detections per image: 10.5153702219:
+  Timing:
+    im_read: 0.018s detect: 0.024s misc: 0.007s
+  Average precisions:
+    car_easy: 0.933
+    car_medium: 0.875
+    car_hard: 0.789
+    pedestrian_easy: 0.815
+    pedestrian_medium: 0.752
+    pedestrian_hard: 0.683
+    cyclist_easy: 0.867
+    cyclist_medium: 0.863
+    cyclist_hard: 0.838
+    Mean average precision: 0.824
+Analyzing detections...
+Detection Analysis:
+    Number of detections: 16783.0
+    Number of objects: 17381.0
+    Percentage of correct detections: 0.867425370911
+    Percentage of localization error: 0.0673896204493
+    Percentage of classification error: 0.00417088720729
+    Percentage of background error: 0.0594053506524
+    Percentage of repeated detections: 0.00160877077996
+    Recall: 0.837581266901
+
+
+
+
+权重压缩20%：
+
+Evaluation summary:
+  Average number of detections per image: 10.4723336006:
+  Timing:
+    im_read: 0.018s detect: 0.024s misc: 0.007s
+  Average precisions:
+    car_easy: 0.910
+    car_medium: 0.866
+    car_hard: 0.781
+    pedestrian_easy: 0.791
+    pedestrian_medium: 0.735
+    pedestrian_hard: 0.667
+    cyclist_easy: 0.858
+    cyclist_medium: 0.829
+    cyclist_hard: 0.781
+    Mean average precision: 0.802
+Analyzing detections...
+Detection Analysis:
+    Number of detections: 16811.0
+    Number of objects: 17381.0
+    Percentage of correct detections: 0.857712212242
+    Percentage of localization error: 0.0739396823508
+    Percentage of classification error: 0.00475878888823
+    Percentage of background error: 0.0606745583249
+    Percentage of repeated detections: 0.00291475819404
+    Recall: 0.829584028537
+
+
+
+
+
+所有权重压缩30% ：
+Evaluation summary:
+  Average number of detections per image: 10.1336541032:
+  Timing:
+    im_read: 0.018s detect: 0.025s misc: 0.007s
+  Average precisions:
+    car_easy: 0.890
+    car_medium: 0.842
+    car_hard: 0.737
+    pedestrian_easy: 0.751
+    pedestrian_medium: 0.670
+    pedestrian_hard: 0.647
+    cyclist_easy: 0.756
+    cyclist_medium: 0.730
+    cyclist_hard: 0.720
+    Mean average precision: 0.749
+Analyzing detections...
+Detection Analysis:
+    Number of detections: 16767.0
+    Number of objects: 17381.0
+    Percentage of correct detections: 0.84922764955
+    Percentage of localization error: 0.0796803244468
+    Percentage of classification error: 0.00572553229558
+    Percentage of background error: 0.0633387010199
+    Percentage of repeated detections: 0.00202779268802
+    Recall: 0.819227892526
+
+
+
+
+30% 64 压缩:
+Evaluation summary:
+  Average number of detections per image: 10.0705693665:
+  Timing:
+    im_read: 0.018s detect: 0.025s misc: 0.007s
+  Average precisions:
+    car_easy: 0.897
+    car_medium: 0.846
+    car_hard: 0.726
+    pedestrian_easy: 0.756
+    pedestrian_medium: 0.670
+    pedestrian_hard: 0.651
+    cyclist_easy: 0.759
+    cyclist_medium: 0.728
+    cyclist_hard: 0.717
+    Mean average precision: 0.750
+Analyzing detections...
+Detection Analysis:
+    Number of detections: 16758.0
+    Number of objects: 17381.0
+    Percentage of correct detections: 0.848549946294
+    Percentage of localization error: 0.0794247523571
+    Percentage of classification error: 0.0062656641604
+    Percentage of background error: 0.0636710824681
+    Percentage of repeated detections: 0.00208855472013
+    Recall: 0.818134744836
+
+
+30% 128压缩
+Evaluation summary:
+  Average number of detections per image: 10.007751938:
+  Timing:
+    im_read: 0.019s detect: 0.025s misc: 0.007s
+  Average precisions:
+    car_easy: 0.885
+    car_medium: 0.843
+    car_hard: 0.727
+    pedestrian_easy: 0.755
+    pedestrian_medium: 0.670
+    pedestrian_hard: 0.651
+    cyclist_easy: 0.775
+    cyclist_medium: 0.774
+    cyclist_hard: 0.733
+    Mean average precision: 0.757
+Analyzing detections...
+Detection Analysis:
+    Number of detections: 16739.0
+    Number of objects: 17381.0
+    Percentage of correct detections: 0.849692335265
+    Percentage of localization error: 0.0787382758827
+    Percentage of classification error: 0.00561562817373
+    Percentage of background error: 0.0641615389211
+    Percentage of repeated detections: 0.00179222175757
+    Recall: 0.818307347103
+
+
+30% 32压缩
+
+Evaluation summary:
+  Average number of detections per image: 10.3036621224:
+  Timing:
+    im_read: 0.018s detect: 0.025s misc: 0.007s
+  Average precisions:
+    car_easy: 0.895
+    car_medium: 0.847
+    car_hard: 0.745
+    pedestrian_easy: 0.758
+    pedestrian_medium: 0.706
+    pedestrian_hard: 0.657
+    cyclist_easy: 0.799
+    cyclist_medium: 0.780
+    cyclist_hard: 0.741
+    Mean average precision: 0.770
+Analyzing detections...
+Detection Analysis:
+    Number of detections: 16727.0
+    Number of objects: 17381.0
+    Percentage of correct detections: 0.851497578765
+    Percentage of localization error: 0.0793328152089
+    Percentage of classification error: 0.00550008967538
+    Percentage of background error: 0.0619357924314
+    Percentage of repeated detections: 0.00173372391941
+    Recall: 0.819458028882
+
+30% 16压缩
+
+Evaluation summary:
+  Average number of detections per image: 8.43143544507:
+  Timing:
+    im_read: 0.018s detect: 0.024s misc: 0.007s
+  Average precisions:
+    car_easy: 0.739
+    car_medium: 0.648
+    car_hard: 0.569
+    pedestrian_easy: 0.571
+    pedestrian_medium: 0.493
+    pedestrian_hard: 0.470
+    cyclist_easy: 0.570
+    cyclist_medium: 0.508
+    cyclist_hard: 0.492
+    Mean average precision: 0.562
+Analyzing detections...
+Detection Analysis:
+    Number of detections: 15649.0
+    Number of objects: 17381.0
+    Percentage of correct detections: 0.755000319509
+    Percentage of localization error: 0.105374145313
+    Percentage of classification error: 0.0184037318679
+    Percentage of background error: 0.119432551601
+    Percentage of repeated detections: 0.00178925170937
+    Recall: 0.679765260917
+
+
+
+无剪枝 16：
+
+Evaluation summary:
+  Average number of detections per image: 9.9369152633:
+  Timing:
+    im_read: 0.018s detect: 0.024s misc: 0.007s
+  Average precisions:
+    car_easy: 0.836
+    car_medium: 0.759
+    car_hard: 0.674
+    pedestrian_easy: 0.641
+    pedestrian_medium: 0.598
+    pedestrian_hard: 0.544
+    cyclist_easy: 0.666
+    cyclist_medium: 0.637
+    cyclist_hard: 0.616
+    Mean average precision: 0.663
+Analyzing detections...
+Detection Analysis:
+    Number of detections: 16317.0
+    Number of objects: 17381.0
+    Percentage of correct detections: 0.81013666728
+    Percentage of localization error: 0.0948090948091
+    Percentage of classification error: 0.0136054421769
+    Percentage of background error: 0.0786909358338
+    Percentage of repeated detections: 0.00275785990072
+    Recall: 0.7605431218
+
+
+
+无剪枝 32：
+
+Evaluation summary:
+  Average number of detections per image: 10.1895215183:
+  Timing:
+    im_read: 0.018s detect: 0.024s misc: 0.007s
+  Average precisions:
+    car_easy: 0.926
+    car_medium: 0.872
+    car_hard: 0.785
+    pedestrian_easy: 0.768
+    pedestrian_medium: 0.736
+    pedestrian_hard: 0.672
+    cyclist_easy: 0.860
+    cyclist_medium: 0.813
+    cyclist_hard: 0.784
+    Mean average precision: 0.802
+Analyzing detections...
+Detection Analysis:
+    Number of detections: 16729.0
+    Number of objects: 17381.0
+    Percentage of correct detections: 0.865682348018
+    Percentage of localization error: 0.0706557475043
+    Percentage of classification error: 0.00478211489031
+    Percentage of background error: 0.0570267200669
+    Percentage of repeated detections: 0.00185306952
+    Recall: 0.833208676141
+
+无剪枝 64：
+
+Evaluation summary:
+  Average number of detections per image: 10.5827318899:
+  Timing:
+    im_read: 0.018s detect: 0.025s misc: 0.007s
+  Average precisions:
+    car_easy: 0.929
+    car_medium: 0.875
+    car_hard: 0.788
+    pedestrian_easy: 0.808
+    pedestrian_medium: 0.751
+    pedestrian_hard: 0.681
+    cyclist_easy: 0.868
+    cyclist_medium: 0.861
+    cyclist_hard: 0.824
+    Mean average precision: 0.820
+Analyzing detections...
+Detection Analysis:
+    Number of detections: 16786.0
+    Number of objects: 17381.0
+    Percentage of correct detections: 0.865840581437
+    Percentage of localization error: 0.0685094721792
+    Percentage of classification error: 0.00452758250923
+    Percentage of background error: 0.0595138806148
+    Percentage of repeated detections: 0.00160848325986
+    Recall: 0.836200448766
+
+
+无剪枝 128
+
+Evaluation summary:
+  Average number of detections per image: 10.5161721465:
+  Timing:
+    im_read: 0.029s detect: 0.025s misc: 0.007s
+  Average precisions:
+    car_easy: 0.931
+    car_medium: 0.874
+    car_hard: 0.789
+    pedestrian_easy: 0.812
+    pedestrian_medium: 0.756
+    pedestrian_hard: 0.684
+    cyclist_easy: 0.868
+    cyclist_medium: 0.854
+    cyclist_hard: 0.788
+    Mean average precision: 0.817
+Analyzing detections...
+Detection Analysis:
+    Number of detections: 16806.0
+    Number of objects: 17381.0
+    Percentage of correct detections: 0.867844817327
+    Percentage of localization error: 0.0672973937879
+    Percentage of classification error: 0.00446269189575
+    Percentage of background error: 0.0587290253481
+    Percentage of repeated detections: 0.00166607164108
+    Recall: 0.839134687302
+
+
+
+10% 32压缩：
+Evaluation summary:
+  Average number of detections per image: 10.3699545576:
+  Timing:
+    im_read: 0.019s detect: 0.024s misc: 0.007s
+  Average precisions:
+    car_easy: 0.919
+    car_medium: 0.873
+    car_hard: 0.786
+    pedestrian_easy: 0.820
+    pedestrian_medium: 0.751
+    pedestrian_hard: 0.683
+    cyclist_easy: 0.848
+    cyclist_medium: 0.824
+    cyclist_hard: 0.777
+    Mean average precision: 0.809
+Analyzing detections...
+Detection Analysis:
+    Number of detections: 16718.0
+    Number of objects: 17381.0
+    Percentage of correct detections: 0.866790285919
+    Percentage of localization error: 0.0702237109702
+    Percentage of classification error: 0.00430673525541
+    Percentage of background error: 0.0564062686924
+    Percentage of repeated detections: 0.00227299916258
+    Recall: 0.833726482941
+
+
+
+10% 64压缩：
+
+Evaluation summary:
+  Average number of detections per image: 10.50521251:
+  Timing:
+    im_read: 0.020s detect: 0.024s misc: 0.007s
+  Average precisions:
+    car_easy: 0.931
+    car_medium: 0.873
+    car_hard: 0.787
+    pedestrian_easy: 0.818
+    pedestrian_medium: 0.749
+    pedestrian_hard: 0.678
+    cyclist_easy: 0.865
+    cyclist_medium: 0.858
+    cyclist_hard: 0.833
+    Mean average precision: 0.821
+Analyzing detections...
+Detection Analysis:
+    Number of detections: 16796.0
+    Number of objects: 17381.0
+    Percentage of correct detections: 0.865146463444
+    Percentage of localization error: 0.0673374613003
+    Percentage of classification error: 0.00476303881877
+    Percentage of background error: 0.060907358895
+    Percentage of repeated detections: 0.00184567754227
+    Recall: 0.836027846499
+
+
+
+10% 128
+Evaluation summary:
+  Average number of detections per image: 10.4790163058:
+  Timing:
+    im_read: 0.018s detect: 0.024s misc: 0.007s
+  Average precisions:
+    car_easy: 0.933
+    car_medium: 0.875
+    car_hard: 0.788
+    pedestrian_easy: 0.815
+    pedestrian_medium: 0.751
+    pedestrian_hard: 0.680
+    cyclist_easy: 0.861
+    cyclist_medium: 0.857
+    cyclist_hard: 0.785
+    Mean average precision: 0.816
+Analyzing detections...
+Detection Analysis:
+    Number of detections: 16798.0
+    Number of objects: 17381.0
+    Percentage of correct detections: 0.866888915347
+    Percentage of localization error: 0.0679842838433
+    Percentage of classification error: 0.00434575544708
+    Percentage of background error: 0.0591141802596
+    Percentage of repeated detections: 0.00166686510299
+    Recall: 0.837811403256
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
